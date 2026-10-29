@@ -65,14 +65,6 @@ int main(int argc, char* argv[]) {
     fill_random(arr, size);
 
     int depth = 30;
-    int tmp = num_threads;
-    while (tmp > 1) {
-        tmp /= 2;
-        depth++;
-    }
-    if (depth == 0)
-        depth = 1;
-
     double t0 = now_sec();
     quicksort_parallel(arr, 0, size - 1, depth);
     double t1 = now_sec();
