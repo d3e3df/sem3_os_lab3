@@ -64,9 +64,8 @@ int main(int argc, char* argv[]) {
     }
     fill_random(arr, size);
 
-    int depth = 30;
     double t0 = now_sec();
-    quicksort_parallel(arr, 0, size - 1, depth);
+    quicksort_parallel(arr, 0, size - 1);
     double t1 = now_sec();
 
     printf("Отсортировано: %s\n", is_sorted(arr, size) ? "да" : "НЕТ");

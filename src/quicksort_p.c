@@ -30,17 +30,17 @@ void quicksort_sequential(int* arr, int left, int right) {
 
 static void* thread_func(void* arg) {
     ThreadArg* targ = (ThreadArg*)arg;
-    quicksort_parallel(targ->arr, targ->left, targ->right, targ->depth);
+    quicksort_parallel(targ->arr, targ->left, targ->right);
     free(targ);
     sem_post(&sem);
     return NULL;
 }
 
-void quicksort_parallel(int* arr, int left, int right, int depth) {
+void quicksort_parallel(int* arr, int left, int right) {
     if (left >= right)
         return;
 
-    if ((right - left) < THRESHOLD || depth == 0) {
+    if ((right - left) < THRESHOLD) {
         quicksort_sequential(arr, left, right);
         return;
     }
@@ -70,7 +70,6 @@ void quicksort_parallel(int* arr, int left, int right, int depth) {
         arg->arr = arr;
         arg->left = left;
         arg->right = j;
-        arg->depth = depth - 1;
 
         pthread_t tid;
         if (pthread_create(&tid, NULL, thread_func, arg) != 0) {
@@ -78,12 +77,12 @@ void quicksort_parallel(int* arr, int left, int right, int depth) {
             free(arg);
             sem_post(&sem);
             quicksort_sequential(arr, left, j);
-            quicksort_parallel(arr, i, right, depth - 1);
+            quicksort_parallel(arr, i, right);
             return;
         }
 
         total_threads_created++;
-        quicksort_parallel(arr, i, right, depth - 1);
+        quicksort_parallel(arr, i, right);
         pthread_join(tid, NULL);
     } else {
         quicksort_sequential(arr, left, j);
